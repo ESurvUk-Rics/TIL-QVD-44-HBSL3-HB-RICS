@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ESurv - Upload in Progress</title>
   <style>
     body {
@@ -13,52 +13,59 @@
     }
     img {
       display: block;
-      margin: 0 auto 30px auto;
-      max-width: 100%;
+      margin: 0 auto 30px auto; /* centres */
+      max-width: 100%;           /* responsive */
       height: auto;
-      cursor: pointer; /* shows clickable hand */
+      cursor: pointer;
     }
-    h1 {
-      color: #333;
-      margin-bottom: 20px;
-    }
-    p {
-      color: #555;
-      font-size: 18px;
-    }
+    h1 { color: #333; margin-bottom: 20px; }
+    p  { color: #555; font-size: 18px; }
 
     /* Loading overlay */
     #loadingOverlay {
       display: none; /* hidden by default */
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(255, 255, 255, 0.9);
+      inset: 0;
+      background: rgba(255, 255, 255, 0.95);
       z-index: 1000;
+      display: flex;           /* we'll toggle visibility via visibility/opacity for smoother paint */
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    #loadingOverlay.show {
+      visibility: visible;
+      opacity: 1;
     }
 
-    /* Spinning cog */
+    /* Spinner */
     .loader {
       border: 12px solid #f3f3f3;
-      border-top: 12px solid #0B3D91; /* blue cog */
+      border-top: 12px solid #0B3D91;
       border-radius: 50%;
-      width: 80px;
-      height: 80px;
+      width: 80px; height: 80px;
       animation: spin 1.2s linear infinite;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    @keyframes spin { 
+      0% { transform: rotate(0deg); } 
+      100% { transform: rotate(360deg); } 
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    #loadingText {
+      font-size: 18px;
+      color: #333;
+      font-weight: bold;
+      text-align: center;
+      padding: 0 20px;
     }
   </style>
 </head>
 <body>
-  <img src="logov1.png" alt="ESurv Logo">
+  <img src="logov1.png" alt="ESurv Logo" />
 
   <h1>Hello Mr Tilley,</h1>
   <p>Your RICS Home Buyers Level 2 Survey is ready to view.</p>
@@ -72,27 +79,55 @@
     </div>
 
     <div class="w3-container">
-      <strong>Home Buyer Level 2 with Valuation</strong>
+    
+      <strong>Home Buyer Level 2 Survey & Valuation</strong>
       <!-- Clickable image -->
-      <img src="IMG_6005.jpeg" alt="Survey L2" id="surveyImage">
+      <img src="IMG_6005.jpeg" alt="Survey L2" id="surveyImage" />
     </div>
   </div>
 
   <!-- Loading overlay -->
-  <div id="loadingOverlay">
-    <div class="loader"></div>
-    <p>Loading your report...</p>
+  <div id="loadingOverlay" role="status" aria-live="polite">
+    <div class="loader" aria-hidden="true"></div>
+    <p id="loadingText">Loading...</p>
   </div>
 
   <script>
-    // Get elements
     const surveyImage = document.getElementById('surveyImage');
     const overlay = document.getElementById('loadingOverlay');
+    const loadingText = document.getElementById('loadingText');
 
-    // When the image is clicked, show the loading overlay (and keep it showing)
-    surveyImage.addEventListener('click', () => {
-      overlay.style.display = 'flex';
-    });
+    // Messages to cycle through (in the order requested)
+    const messages = [
+      "Loading Images...",
+      "Loading Traffic Light System...",
+      "Loading Local Data...",
+      "Loading Room Data...",
+      "Loading Construction Type Information...",
+      "Loading Local Mining Data..."
+    ];
+
+    // 6 minutes per message
+    const MESSAGE_DURATION_MS = 6 * 60 * 1000; // 360,000 ms
+
+    let messageIndex = 0;
+    let intervalId = null;
+
+    function startLoadingCycle() {
+      // Prevent multiple intervals if the image is clicked more than once
+      if (intervalId !== null) return;
+
+      // Show overlay
+      overlay.classList.add('show');
+      loadingText.textContent = messages[messageIndex];
+
+      intervalId = setInterval(() => {
+        messageIndex = (messageIndex + 1) % messages.length;
+        loadingText.textContent = messages[messageIndex];
+      }, MESSAGE_DURATION_MS);
+    }
+
+    surveyImage.addEventListener('click', startLoadingCycle);
   </script>
 </body>
 </html>
