@@ -14,7 +14,8 @@
     img {
       display: block;
       margin: 0 auto 30px auto; /* centers image horizontally */
-      max-width: 400px;
+      max-width: 100%; /* responsive: shrink on smaller screens */
+      height: auto;    /* maintain aspect ratio */
     }
     h1 {
       color: #333;
@@ -23,6 +24,19 @@
     p {
       color: #555;
       font-size: 18px;
+    }
+
+    /* Optional: make text scale slightly smaller on mobile */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+      h1 {
+        font-size: 22px;
+      }
+      p {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
@@ -43,8 +57,8 @@
     </div>
 
     <div class="w3-container">
-      <h3>Valuation Report</h3>
-      <h3>Home Buyer Level 2</h3>
+      <
+      <h3>Home Buyer Level 2 with Valuation</h3>
       <img src="IMG_6005.jpeg" alt="Survey L2">
     </div>
   </div>
