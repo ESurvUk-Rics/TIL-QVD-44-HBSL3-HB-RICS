@@ -13,9 +13,10 @@
     }
     img {
       display: block;
-      margin: 0 auto 30px auto; /* centers image horizontally */
-      max-width: 100%; /* responsive: shrink on smaller screens */
-      height: auto;    /* maintain aspect ratio */
+      margin: 0 auto 30px auto;
+      max-width: 100%;
+      height: auto;
+      cursor: pointer; /* shows clickable hand */
     }
     h1 {
       color: #333;
@@ -26,17 +27,33 @@
       font-size: 18px;
     }
 
-    /* Optional: make text scale slightly smaller on mobile */
-    @media (max-width: 600px) {
-      body {
-        padding: 20px;
-      }
-      h1 {
-        font-size: 22px;
-      }
-      p {
-        font-size: 16px;
-      }
+    /* Loading overlay */
+    #loadingOverlay {
+      display: none; /* hidden by default */
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    /* Spinning cog */
+    .loader {
+      border: 12px solid #f3f3f3;
+      border-top: 12px solid #0B3D91; /* blue cog */
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1.2s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -47,8 +64,6 @@
   <p>Your RICS Home Buyers Level 2 Survey is ready to view.</p>
   <p>Please follow the instructions displayed below.</p>
 
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
-
   <div class="w3-container">
     <h2>Current Progress</h2>
 
@@ -57,10 +72,27 @@
     </div>
 
     <div class="w3-container">
-      
       <strong>Home Buyer Level 2 with Valuation</strong>
-      <img src="IMG_6005.jpeg" alt="Survey L2">
+      <!-- Clickable image -->
+      <img src="IMG_6005.jpeg" alt="Survey L2" id="surveyImage">
     </div>
   </div>
+
+  <!-- Loading overlay -->
+  <div id="loadingOverlay">
+    <div class="loader"></div>
+    <p>Loading your report...</p>
+  </div>
+
+  <script>
+    // Get elements
+    const surveyImage = document.getElementById('surveyImage');
+    const overlay = document.getElementById('loadingOverlay');
+
+    // When the image is clicked, show the loading overlay (and keep it showing)
+    surveyImage.addEventListener('click', () => {
+      overlay.style.display = 'flex';
+    });
+  </script>
 </body>
 </html>
