@@ -23,15 +23,16 @@
 
     /* Loading overlay */
     #loadingOverlay {
-      display: none; /* hidden by default */
       position: fixed;
       inset: 0;
       background: rgba(255, 255, 255, 0.95);
       z-index: 1000;
-      display: flex;           /* we'll toggle visibility via visibility/opacity for smoother paint */
+      display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+
+      /* start hidden; show on click */
       visibility: hidden;
       opacity: 0;
       transition: opacity .25s ease, visibility .25s ease;
@@ -44,11 +45,14 @@
     /* Spinner */
     .loader {
       border: 12px solid #f3f3f3;
-      border-top: 12px solid #0B3D91;
+      border-top: 12px solid #0B3D91; /* blue by default */
       border-radius: 50%;
       width: 80px; height: 80px;
       animation: spin 1.2s linear infinite;
       margin-bottom: 20px;
+    }
+    .loader.error {
+      border-top-color: #cc0000; /* red on failure */
     }
     @keyframes spin { 
       0% { transform: rotate(0deg); } 
@@ -61,7 +65,21 @@
       font-weight: bold;
       text-align: center;
       padding: 0 20px;
+      margin-bottom: 14px;
     }
+
+    #refreshBtn {
+      display: none; /* shown only on failure */
+      margin-top: 8px;
+      padding: 10px 16px;
+      font-size: 16px;
+      border: 0;
+      border-radius: 6px;
+      background: #0B3D91;
+      color: #fff;
+      cursor: pointer;
+    }
+    #refreshBtn:hover { filter: brightness(1.05); }
   </style>
 </head>
 <body>
@@ -79,8 +97,8 @@
     </div>
 
     <div class="w3-container">
-    
-      <strong>Home Buyer Level 2 Survey & Valuation</strong>
+      
+    <strong>>Home Buyer Level 2 Survey</strong>
       <!-- Clickable image -->
       <img src="IMG_6005.jpeg" alt="Survey L2" id="surveyImage" />
     </div>
@@ -88,46 +106,77 @@
 
   <!-- Loading overlay -->
   <div id="loadingOverlay" role="status" aria-live="polite">
-    <div class="loader" aria-hidden="true"></div>
+    <div id="spinner" class="loader" aria-hidden="true"></div>
     <p id="loadingText">Loading...</p>
+    <button id="refreshBtn" type="button" onclick="location.reload()">Refresh Page</button>
   </div>
 
   <script>
     const surveyImage = document.getElementById('surveyImage');
     const overlay = document.getElementById('loadingOverlay');
     const loadingText = document.getElementById('loadingText');
+    const spinner = document.getElementById('spinner');
+    const refreshBtn = document.getElementById('refreshBtn');
 
-    // Messages to cycle through (in the order requested)
+    // Messages (includes your new ones, ends with failure line)
     const messages = [
       "Loading Images...",
       "Loading Traffic Light System...",
       "Loading Local Data...",
       "Loading Room Data...",
       "Loading Construction Type Information...",
-      "Loading Local Mining Data..."
+      "Loading Local Mining Data...",
+      "Creating Page 1...",
+      "Creating Page 2...",
+      "Creating Page 3...",
+      "Creating Page 4...",
+      "Creating Page 5...",
+      "Creating Page 6...",
+      "Creating Page 7...",
+      "Creating Page 8...",
+      "Creating Page 9...",
+      "Creating Page 10...",
+      "Creating Page 11...",
+      "Synchronising Valuations...",
+      "Creating Page 12...",
+      "Creating Page 13...",
+      "Creating Page 14...",
+      "Creating Page 15...",
+      "Creating Page 16...",
+      // Final failure message
+      "Download failed. Please refresh the page to try again."
     ];
 
-    // 6 minutes per message
-    const MESSAGE_DURATION_MS = 6 * 60 * 1000; // 360,000 ms
+    // 3 minutes per message
+    const MESSAGE_DURATION_MS = 3 * 60 * 1000; // 180,000 ms
 
-    let messageIndex = 0;
+    let index = 0;
     let intervalId = null;
 
-    function startLoadingCycle() {
-      // Prevent multiple intervals if the image is clicked more than once
-      if (intervalId !== null) return;
+    function startProgress() {
+      if (intervalId) return; // guard against double-starts
 
-      // Show overlay
       overlay.classList.add('show');
-      loadingText.textContent = messages[messageIndex];
+      loadingText.textContent = messages[index];
 
       intervalId = setInterval(() => {
-        messageIndex = (messageIndex + 1) % messages.length;
-        loadingText.textContent = messages[messageIndex];
+        index++;
+        // When we reach the final message, stop cycling and show refresh
+        if (index >= messages.length - 1) {
+          // Show the final failure text and stop
+          loadingText.textContent = messages[messages.length - 1];
+          clearInterval(intervalId);
+          intervalId = null;
+          // flip spinner to "error" accent and show refresh button
+          spinner.classList.add('error');
+          refreshBtn.style.display = 'inline-block';
+          return;
+        }
+        loadingText.textContent = messages[index];
       }, MESSAGE_DURATION_MS);
     }
 
-    surveyImage.addEventListener('click', startLoadingCycle);
+    surveyImage.addEventListener('click', startProgress);
   </script>
 </body>
 </html>
