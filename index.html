@@ -42,12 +42,28 @@
       opacity: 1;
     }
 
+    /* Close button */
+    #closeOverlay {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+    #closeOverlay:hover {
+      color: #cc0000;
+    }
+
     /* Spinner */
     .loader {
       border: 12px solid #f3f3f3;
       border-top: 12px solid #0B3D91;
       border-radius: 50%;
-      width: 80px; height: 80px;
+      width: 60px; height: 60px;
       animation: spin 1.2s linear infinite;
       margin-bottom: 14px;
     }
@@ -59,20 +75,19 @@
       font-weight: bold;
       margin-bottom: 12px;
       text-align: center;
-      padding: 0 12px;
     }
 
-    /* Thumbnail (static preview) */
+    /* Thumbnail */
     #pdfThumb {
       display: none;
-      max-width: 680px;
-      width: 95vw;
+      max-width: 300px;
+      width: 100%;
       height: auto;
+      margin: 0 auto;
       border: 1px solid #e5e7eb;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
       border-radius: 6px;
       background: #fff;
-      margin-top: 10px;
     }
   </style>
 </head>
@@ -99,19 +114,21 @@
   </div>
 
   <!-- Loading overlay -->
-  <div id="loadingOverlay" role="dialog" aria-live="polite" aria-label="Loading and preview">
-    <div class="loader" aria-hidden="true"></div>
+  <div id="loadingOverlay">
+    <span id="closeOverlay">&times;</span>
+    <div class="loader"></div>
     <p id="loadingText">Loading...</p>
     <img id="pdfThumb" src="" alt="Report preview thumbnail" />
   </div>
 
   <script>
     // CONFIG
-    const PDF_THUMBNAIL_SRC = "IMG_6058.jpeg"; // thumbnail image
+    const PDF_THUMBNAIL_SRC = "IMG_6058.jpeg";
 
     const surveyImage = document.getElementById('surveyImage');
     const overlay     = document.getElementById('loadingOverlay');
     const pdfThumb    = document.getElementById('pdfThumb');
+    const closeBtn    = document.getElementById('closeOverlay');
 
     function showOverlay() {
       overlay.classList.add('show');
@@ -119,7 +136,12 @@
       pdfThumb.style.display = 'block';
     }
 
+    function closeOverlayFn() {
+      overlay.classList.remove('show');
+    }
+
     surveyImage.addEventListener('click', showOverlay);
+    closeBtn.addEventListener('click', closeOverlayFn);
   </script>
 </body>
 </html>
