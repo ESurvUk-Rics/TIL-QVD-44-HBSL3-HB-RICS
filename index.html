@@ -13,8 +13,8 @@
     }
     img {
       display: block;
-      margin: 0 auto 30px auto; /* centres */
-      max-width: 100%;           /* responsive */
+      margin: 0 auto 30px auto;
+      max-width: 100%;
       height: auto;
       cursor: pointer;
     }
@@ -32,10 +32,10 @@
       justify-content: center;
       align-items: center;
 
-      /* start hidden; show on click */
       visibility: hidden;
       opacity: 0;
       transition: opacity .25s ease, visibility .25s ease;
+      padding: 24px;
     }
     #loadingOverlay.show {
       visibility: visible;
@@ -45,41 +45,48 @@
     /* Spinner */
     .loader {
       border: 12px solid #f3f3f3;
-      border-top: 12px solid #0B3D91; /* blue by default */
+      border-top: 12px solid #0B3D91;
       border-radius: 50%;
       width: 80px; height: 80px;
       animation: spin 1.2s linear infinite;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
-    .loader.error {
-      border-top-color: #cc0000; /* red on failure */
-    }
-    @keyframes spin { 
-      0% { transform: rotate(0deg); } 
-      100% { transform: rotate(360deg); } 
-    }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
 
     #loadingText {
       font-size: 18px;
       color: #333;
       font-weight: bold;
+      margin-bottom: 12px;
       text-align: center;
-      padding: 0 20px;
-      margin-bottom: 14px;
+      padding: 0 12px;
     }
 
-    #refreshBtn {
-      display: none; /* shown only on failure */
-      margin-top: 8px;
-      padding: 10px 16px;
-      font-size: 16px;
-      border: 0;
+    /* Thumbnail */
+    #pdfThumb {
+      display: none;            
+      max-width: 680px;
+      width: 95vw;
+      height: auto;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
       border-radius: 6px;
-      background: #0B3D91;
-      color: #fff;
-      cursor: pointer;
+      background: #fff;
+      margin-bottom: 8px;
     }
-    #refreshBtn:hover { filter: brightness(1.05); }
+
+    #thumbCaption {
+      display: none;
+      font-size: 14px;
+      color: #444;
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 20px; }
+      h1 { font-size: 22px; }
+      p  { font-size: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -97,62 +104,43 @@
     </div>
 
     <div class="w3-container">
-      
-    <strong>Home Buyer Level 2 Survey</strong>
-      <!-- Clickable image -->
+      <h3>Valuation Report</h3>
+      <h3>Home Buyer Level 2</h3>
       <img src="IMG_6005.jpeg" alt="Survey L2" id="surveyImage" />
     </div>
   </div>
 
   <!-- Loading overlay -->
-  <div id="loadingOverlay" role="status" aria-live="polite">
-    <div id="spinner" class="loader" aria-hidden="true"></div>
+  <div id="loadingOverlay" role="dialog" aria-live="polite" aria-label="Loading and preview">
+    <div class="loader" aria-hidden="true"></div>
     <p id="loadingText">Loading...</p>
-    <button id="refreshBtn" type="button" onclick="location.reload()">Refresh Page</button>
+    <img id="pdfThumb" src="" alt="Report preview thumbnail (click to open PDF)" />
+    <p id="thumbCaption">Click the preview to open the full PDF in a new tab</p>
   </div>
 
   <script>
+    // CONFIG
+    const PDF_THUMBNAIL_SRC = "survey_thumbnail.jpg";    // thumbnail image
+    const PDF_URL           = "Survey_Level2_Report.pdf"; // actual PDF
+
     const surveyImage = document.getElementById('surveyImage');
-    const overlay = document.getElementById('loadingOverlay');
-    const loadingText = document.getElementById('loadingText');
-    const spinner = document.getElementById('spinner');
-    const refreshBtn = document.getElementById('refreshBtn');
+    const overlay     = document.getElementById('loadingOverlay');
+    const pdfThumb    = document.getElementById('pdfThumb');
+    const thumbCaption= document.getElementById('thumbCaption');
 
-    // Messages (includes your new ones, ends with failure line)
-    const messages = [
-      "We are currently fixing an issue with our server. Please check back at 12:00"
-    ];
-
-    // 3 minutes per message
-    const MESSAGE_DURATION_MS = 3 * 60 * 1000; // 180,000 ms
-
-    let index = 0;
-    let intervalId = null;
-
-    function startProgress() {
-      if (intervalId) return; // guard against double-starts
-
+    function showOverlay() {
       overlay.classList.add('show');
-      loadingText.textContent = messages[index];
-
-      intervalId = setInterval(() => {
-        index++;
-        // When we reach the final message, stop cycling and show refresh
-        if (index >= messages.length - 1) {
-          // Show the final failure text and stop
-          loadingText.textContent = messages[messages.length - 1];
-          clearInterval(intervalId);
-          intervalId = null;
-          // flip spinner to "error" accent and show refresh button
-          spinner.classList.add('error');
-          refreshBtn.style.display = 'inline-block';
-          return;
-        }
-        loadingText.textContent = messages[index];
-      }, MESSAGE_DURATION_MS);
+      pdfThumb.src = PDF_THUMBNAIL_SRC;
+      pdfThumb.style.display = 'block';
+      thumbCaption.style.display = 'block';
     }
 
-    surveyImage.addEventListener('click', startProgress);
+    function openPdf() {
+      window.open(PDF_URL, '_blank', 'noopener,noreferrer');
+    }
+
+    surveyImage.addEventListener('click', showOverlay);
+    pdfThumb.addEventListener('click', openPdf);
   </script>
 </body>
 </html>
