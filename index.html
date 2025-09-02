@@ -75,12 +75,12 @@
       text-align: center;
     }
 
-    /* Thumbnails (same width, aligned) */
+    /* Thumbnails (same width & aligned) */
     .thumb {
       display: none;
-      max-width: 280px;  /* fixed maximum width */
-      width: 100%;       /* scale responsively */
-      height: auto;      /* keep aspect ratio */
+      max-width: 280px;
+      width: 100%;
+      height: auto;
       margin: 10px auto;
       border: 1px solid #e5e7eb;
       box-shadow: 0 6px 18px rgba(0,0,0,0.08);
@@ -116,27 +116,32 @@
     <span id="closeOverlay">&times;</span>
     <div class="loader"></div>
     <p id="loadingText">Loading...</p>
-    <img id="pdfThumb" class="thumb" src="" alt="Report preview thumbnail" />
+    <img id="pdfThumb" class="thumb" src="" alt="Cover page preview" />
     <img id="contentsThumb" class="thumb" src="" alt="Contents page preview" />
+    <img id="inspectionThumb" class="thumb" src="" alt="About the inspection preview" />
   </div>
 
   <script>
     // CONFIG
-    const PDF_THUMBNAIL_SRC      = "IMG_6058.jpeg"; // main preview
-    const CONTENTS_THUMBNAIL_SRC = "IMG_6064.jpeg"; // contents page
+    const PDF_THUMBNAIL_SRC        = "IMG_6058.jpeg"; // Cover page
+    const CONTENTS_THUMBNAIL_SRC   = "IMG_6064.jpeg"; // Contents page
+    const INSPECTION_THUMBNAIL_SRC = "IMG_6065.jpeg"; // About the inspection page
 
-    const surveyImage   = document.getElementById('surveyImage');
-    const overlay       = document.getElementById('loadingOverlay');
-    const pdfThumb      = document.getElementById('pdfThumb');
-    const contentsThumb = document.getElementById('contentsThumb');
-    const closeBtn      = document.getElementById('closeOverlay');
+    const surveyImage    = document.getElementById('surveyImage');
+    const overlay        = document.getElementById('loadingOverlay');
+    const pdfThumb       = document.getElementById('pdfThumb');
+    const contentsThumb  = document.getElementById('contentsThumb');
+    const inspectionThumb= document.getElementById('inspectionThumb');
+    const closeBtn       = document.getElementById('closeOverlay');
 
     function showOverlay() {
       overlay.classList.add('show');
-      pdfThumb.src = PDF_THUMBNAIL_SRC;
-      contentsThumb.src = CONTENTS_THUMBNAIL_SRC;
-      pdfThumb.style.display = 'block';
-      contentsThumb.style.display = 'block';
+      pdfThumb.src        = PDF_THUMBNAIL_SRC;
+      contentsThumb.src   = CONTENTS_THUMBNAIL_SRC;
+      inspectionThumb.src = INSPECTION_THUMBNAIL_SRC;
+      pdfThumb.style.display        = 'block';
+      contentsThumb.style.display   = 'block';
+      inspectionThumb.style.display = 'block';
     }
 
     function closeOverlayFn() {
