@@ -62,9 +62,9 @@
       padding: 0 12px;
     }
 
-    /* Thumbnail */
+    /* Thumbnail (static preview) */
     #pdfThumb {
-      display: none;            
+      display: none;
       max-width: 680px;
       width: 95vw;
       height: auto;
@@ -72,20 +72,7 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.08);
       border-radius: 6px;
       background: #fff;
-      margin-bottom: 8px;
-    }
-
-    #thumbCaption {
-      display: none;
-      font-size: 14px;
-      color: #444;
-      font-style: italic;
-    }
-
-    @media (max-width: 600px) {
-      body { padding: 20px; }
-      h1 { font-size: 22px; }
-      p  { font-size: 16px; }
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -106,6 +93,7 @@
     <div class="w3-container">
       <h3>Valuation Report</h3>
       <h3>Home Buyer Level 2</h3>
+      <!-- Click-to-open overlay trigger -->
       <img src="IMG_6005.jpeg" alt="Survey L2" id="surveyImage" />
     </div>
   </div>
@@ -114,33 +102,24 @@
   <div id="loadingOverlay" role="dialog" aria-live="polite" aria-label="Loading and preview">
     <div class="loader" aria-hidden="true"></div>
     <p id="loadingText">Loading...</p>
-    <img id="pdfThumb" src="" alt="Report preview thumbnail (click to open PDF)" />
-    <p id="thumbCaption">Click the preview to open the full PDF in a new tab</p>
+    <img id="pdfThumb" src="" alt="Report preview thumbnail" />
   </div>
 
   <script>
     // CONFIG
-    const PDF_THUMBNAIL_SRC = "survey_thumbnail.jpg";    // thumbnail image
-    const PDF_URL           = "Survey_Level2_Report.pdf"; // actual PDF
+    const PDF_THUMBNAIL_SRC = "survey_thumbnail.jpg"; // thumbnail image
 
     const surveyImage = document.getElementById('surveyImage');
     const overlay     = document.getElementById('loadingOverlay');
     const pdfThumb    = document.getElementById('pdfThumb');
-    const thumbCaption= document.getElementById('thumbCaption');
 
     function showOverlay() {
       overlay.classList.add('show');
       pdfThumb.src = PDF_THUMBNAIL_SRC;
       pdfThumb.style.display = 'block';
-      thumbCaption.style.display = 'block';
-    }
-
-    function openPdf() {
-      window.open(PDF_URL, '_blank', 'noopener,noreferrer');
     }
 
     surveyImage.addEventListener('click', showOverlay);
-    pdfThumb.addEventListener('click', openPdf);
   </script>
 </body>
 </html>
