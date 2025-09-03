@@ -11,6 +11,7 @@
       padding: 50px;
       background-color: #f5f5f5;
     }
+    /* Global images */
     img {
       display: block;
       margin: 0 auto 30px auto;
@@ -21,7 +22,7 @@
     h1 { color: #333; margin-bottom: 20px; }
     p  { color: #555; font-size: 18px; }
 
-    /* Loading overlay */
+    /* Overlay */
     #loadingOverlay {
       position: fixed;
       inset: 0;
@@ -39,10 +40,7 @@
       opacity: 0;
       transition: opacity .25s ease, visibility .25s ease;
     }
-    #loadingOverlay.show {
-      visibility: visible;
-      opacity: 1;
-    }
+    #loadingOverlay.show { visibility: visible; opacity: 1; }
 
     /* Close button */
     #closeOverlay {
@@ -77,9 +75,9 @@
       text-align: center;
     }
 
-    /* Thumbnails (first 4 real ones) */
+    /* Real thumbnails (first 4) */
     .thumb {
-      display: none;
+      display: none;               /* shown in JS */
       max-width: 280px;
       width: 100%;
       height: auto;
@@ -90,18 +88,21 @@
       background: #fff;
     }
 
-    /* Loading placeholder thumbnails (7) */
+    /* Placeholder group is toggled as one block */
+    #placeholderGroup { display: none; } /* shown in JS */
+    
+    /* Loading placeholder cards (7) */
     .thumbWrap {
-      display: none;
+      display: block;              /* <-- ensure visible */
       position: relative;
       max-width: 280px;
       width: 100%;
-      height: 180px;               /* fixed height placeholder */
+      height: 180px;               /* <-- fixed height so it’s not a line */
       margin: 10px auto;
       border: 1px solid #e5e7eb;
       box-shadow: 0 6px 18px rgba(0,0,0,0.08);
       border-radius: 6px;
-      background: #f0f0f0;         /* grey placeholder */
+      background: #f0f0f0;         /* grey card */
       overflow: hidden;
     }
     .thumbOverlay {
@@ -111,6 +112,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 1;                  /* <-- ensure on top */
     }
     .thumbSpinner {
       border: 8px solid #f3f3f3;
@@ -148,24 +150,26 @@
     <div class="loader"></div>
     <p id="loadingText">Loading...</p>
 
-    <!-- First 4 thumbnails (real) -->
+    <!-- First 4 real thumbnails -->
     <img id="pdfThumb" class="thumb" src="" alt="Cover page preview" />
     <img id="contentsThumb" class="thumb" src="" alt="Contents page preview" />
     <img id="inspectionThumb" class="thumb" src="" alt="About the inspection preview" />
     <img id="extraThumb" class="thumb" src="" alt="Extra page preview" />
 
-    <!-- 7 placeholders with spinners -->
-    <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
-    <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
-    <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
-    <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
-    <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
-    <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
-    <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
+    <!-- 7 placeholders with always-on spinners -->
+    <div id="placeholderGroup">
+      <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
+      <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
+      <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
+      <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
+      <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
+      <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
+      <div class="thumbWrap"><div class="thumbOverlay"><div class="thumbSpinner"></div></div></div>
+    </div>
   </div>
 
   <script>
-    // CONFIG
+    // CONFIG: real thumbs
     const PDF_THUMBNAIL_SRC        = "IMG_6058.jpeg"; // Cover page
     const CONTENTS_THUMBNAIL_SRC   = "IMG_6064.jpeg"; // Contents page
     const INSPECTION_THUMBNAIL_SRC = "IMG_6065.jpeg"; // About the inspection
@@ -178,12 +182,13 @@
     const inspectionThumb = document.getElementById('inspectionThumb');
     const extraThumb      = document.getElementById('extraThumb');
     const closeBtn        = document.getElementById('closeOverlay');
+    const placeholders    = document.getElementById('placeholderGroup');
 
     function showOverlay() {
       overlay.classList.add('show');
-      document.body.style.overflow = 'hidden'; // lock background scroll
+      document.body.style.overflow = 'hidden'; // lock page scroll
 
-      // Show first 4 real thumbs
+      // Show the first 4 real thumbs
       pdfThumb.src        = PDF_THUMBNAIL_SRC;
       contentsThumb.src   = CONTENTS_THUMBNAIL_SRC;
       inspectionThumb.src = INSPECTION_THUMBNAIL_SRC;
@@ -194,10 +199,8 @@
       inspectionThumb.style.display = 'block';
       extraThumb.style.display      = 'block';
 
-      // Show placeholder thumbs
-      document.querySelectorAll('.thumbWrap').forEach(el => {
-        el.style.display = 'block';
-      });
+      // Show the placeholder group (7 cards with spinners)
+      placeholders.style.display    = 'block';
     }
 
     function closeOverlayFn() {
