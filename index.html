@@ -77,7 +77,7 @@
       text-align: center;
     }
 
-    /* Thumbnails */
+    /* Thumbnails (same width & aligned) */
     .thumb {
       display: none;
       max-width: 280px;
@@ -120,19 +120,22 @@
     <img id="pdfThumb" class="thumb" src="" alt="Cover page preview" />
     <img id="contentsThumb" class="thumb" src="" alt="Contents page preview" />
     <img id="inspectionThumb" class="thumb" src="" alt="About the inspection preview" />
+    <img id="extraThumb" class="thumb" src="" alt="Extra page preview" />
   </div>
 
   <script>
     // CONFIG
     const PDF_THUMBNAIL_SRC        = "IMG_6058.jpeg"; // Cover page
     const CONTENTS_THUMBNAIL_SRC   = "IMG_6064.jpeg"; // Contents page
-    const INSPECTION_THUMBNAIL_SRC = "IMG_6065.jpeg"; // About the inspection page
+    const INSPECTION_THUMBNAIL_SRC = "IMG_6065.jpeg"; // About the inspection
+    const EXTRA_THUMBNAIL_SRC      = "IMG_6073.jpeg"; // New page
 
     const surveyImage    = document.getElementById('surveyImage');
     const overlay        = document.getElementById('loadingOverlay');
     const pdfThumb       = document.getElementById('pdfThumb');
     const contentsThumb  = document.getElementById('contentsThumb');
     const inspectionThumb= document.getElementById('inspectionThumb');
+    const extraThumb     = document.getElementById('extraThumb');
     const closeBtn       = document.getElementById('closeOverlay');
 
     function showOverlay() {
@@ -142,14 +145,17 @@
       pdfThumb.src        = PDF_THUMBNAIL_SRC;
       contentsThumb.src   = CONTENTS_THUMBNAIL_SRC;
       inspectionThumb.src = INSPECTION_THUMBNAIL_SRC;
+      extraThumb.src      = EXTRA_THUMBNAIL_SRC;
+
       pdfThumb.style.display        = 'block';
       contentsThumb.style.display   = 'block';
       inspectionThumb.style.display = 'block';
+      extraThumb.style.display      = 'block';
     }
 
     function closeOverlayFn() {
       overlay.classList.remove('show');
-      document.body.style.overflow = ''; // restore background scroll
+      document.body.style.overflow = ''; // restore scroll
     }
 
     surveyImage.addEventListener('click', showOverlay);
