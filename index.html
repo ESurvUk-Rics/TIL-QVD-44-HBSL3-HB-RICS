@@ -5,86 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ESurv - Upload in Progress</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-    img  { display: block; margin: 0 auto 30px auto; max-width: 100%; height: auto; cursor: pointer; }
-    h1 { color:#333; margin-bottom:20px; } p { color:#555; font-size:18px; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background: #f5f5f5;
+    }
+    img {
+      display: block;
+      margin: 0 auto 30px auto;
+      max-width: 100%;
+      height: auto;
+      cursor: pointer;
+    }
+    h1 { color:#333; margin-bottom:20px; }
+    p  { color:#555; font-size:18px; }
 
     /* Overlay */
     #loadingOverlay{
-      position:fixed; inset:0; background:rgba(255,255,255,.95); z-index:1000;
-      display:flex; flex-direction:column; justify-content:flex-start; align-items:center;
-      padding:80px 24px 24px; overflow-y:auto; -webkit-overflow-scrolling:touch;
-      visibility:hidden; opacity:0; transition:opacity .25s ease, visibility .25s ease;
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(255,255,255,0.95);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 80px 24px 24px;
+      visibility: hidden; opacity: 0; transition: opacity .25s ease, visibility .25s ease;
     }
-    #loadingOverlay.show{ visibility:visible; opacity:1; }
+    #loadingOverlay.show{ visibility: visible; opacity: 1; }
 
+    /* Close button (optional) */
     #closeOverlay{
-      position:absolute; top:15px; right:20px; font-size:28px; font-weight:bold; color:#333;
-      cursor:pointer; user-select:none; transition:color .2s ease;
+      position: absolute; top: 15px; right: 20px;
+      font-size: 28px; font-weight: bold; color: #333; cursor: pointer; user-select: none;
     }
     #closeOverlay:hover{ color:#cc0000; }
 
-    .loader{ border:12px solid #f3f3f3; border-top:12px solid #0B3D91; border-radius:50%;
-      width:60px; height:60px; animation:spin 1.2s linear infinite; margin-bottom:14px; }
-    @keyframes spin{ 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
+    /* Spinner */
+    .loader{
+      border: 12px solid #f3f3f3; border-top: 12px solid #0B3D91;
+      border-radius: 50%; width: 70px; height: 70px;
+      animation: spin 1.2s linear infinite; margin-bottom: 16px;
+    }
+    @keyframes spin { 0%{ transform: rotate(0) } 100%{ transform: rotate(360deg) } }
 
-    #loadingText{ font-size:18px; color:#333; font-weight:bold; margin-bottom:12px; }
-
-    /* Real thumbnails (first 4) */
-    .thumb{
-      display:none; max-width:280px; width:100%; height:auto; margin:10px auto;
-      border:1px solid #e5e7eb; box-shadow:0 6px 18px rgba(0,0,0,.08); border-radius:6px; background:#fff;
+    /* Message */
+    #loadingText{
+      font-size: 18px; color: #333; font-weight: 600;
+      max-width: 520px; line-height: 1.4;
     }
-
-    /* ======== NON-COLLAPSING PLACEHOLDERS ======== */
-    /* Group toggled to grid so items can't collapse */
-    #placeholderGroup{
-      display:none;      /* shown in JS */
-      width:100%;
-      max-width: 620px;  /* keep centered and tidy */
-      margin: 6px auto 0;
-      display: none;     /* default hidden; JS sets to grid */
-      justify-items: center;
-      gap: 12px;
-    }
-    /* When shown, use a single column on mobile, two on wider screens */
-    @media (min-width: 640px){
-      #placeholderGroup.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 639.98px){
-      #placeholderGroup.grid { display: grid; grid-template-columns: 1fr; }
-    }
-
-    .ph{
-      position: relative;
-      width: 100%;
-      max-width: 280px;
-      /* Give intrinsic height: modern + fallback */
-      aspect-ratio: 3 / 4;    /* modern browsers */
-      min-height: 180px;       /* fallback if aspect-ratio unsupported */
-      background: #f0f0f0;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 6px 18px rgba(0,0,0,.08);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    /* Optional “ghost” image area inside placeholder, purely cosmetic */
-    .ph::after{
-      content: "";
-      position: absolute; inset: 10px;
-      border-radius: 4px;
-      background: linear-gradient(180deg, #f7f7f7, #ececec);
-    }
-
-    .phOverlay{
-      position:absolute; inset:0; background:rgba(255,255,255,.55);
-      display:grid; place-items:center; z-index:1;
-    }
-    .phSpinner{
-      border:8px solid #f3f3f3; border-top:8px solid #0B3D91; border-radius:50%;
-      width:44px; height:44px; animation:spin 1.2s linear infinite;
-    }
-    /* ============================================= */
   </style>
 </head>
 <body>
@@ -103,69 +69,27 @@
     <div class="w3-container">
       <h3>Valuation Report</h3>
       <h3>Home Buyer Level 2</h3>
+      <!-- Click image to show the loading overlay -->
       <img src="IMG_6005.jpeg" alt="Survey L2" id="surveyImage" />
     </div>
   </div>
 
-  <!-- Overlay -->
-  <div id="loadingOverlay" aria-live="polite">
+  <!-- Loading overlay (spinner + message only) -->
+  <div id="loadingOverlay" role="dialog" aria-live="polite" aria-label="Account updating">
     <span id="closeOverlay" aria-label="Close overlay">&times;</span>
     <div class="loader" aria-hidden="true"></div>
-    <p id="loadingText">Loading...</p>
-
-    <!-- 4 real thumbnails -->
-    <img id="pdfThumb"        class="thumb" src="" alt="Cover page preview" />
-    <img id="contentsThumb"   class="thumb" src="" alt="Contents page preview" />
-    <img id="inspectionThumb" class="thumb" src="" alt="About the inspection preview" />
-    <img id="extraThumb"      class="thumb" src="" alt="Extra page preview" />
-
-    <!-- 7 persistent loading placeholders -->
-    <div id="placeholderGroup">
-      <div class="ph"><div class="phOverlay"><div class="phSpinner"></div></div></div>
-      <div class="ph"><div class="phOverlay"><div class="phSpinner"></div></div></div>
-      <div class="ph"><div class="phOverlay"><div class="phSpinner"></div></div></div>
-      <div class="ph"><div class="phOverlay"><div class="phSpinner"></div></div></div>
-      <div class="ph"><div class="phOverlay"><div class="phSpinner"></div></div></div>
-      <div class="ph"><div class="phOverlay"><div class="phSpinner"></div></div></div>
-      <div class="ph"><div class="phOverlay"><div class="phSpinner"></div></div></div>
-    </div>
+    <p id="loadingText">We are currently updating your account. Please check again at <strong>09:00</strong>.</p>
   </div>
 
   <script>
-    // ✔ Ensure these filenames/paths match your repo exactly (case-sensitive)
-    const PDF_THUMBNAIL_SRC        = "IMG_6058.jpeg"; // Cover page
-    const CONTENTS_THUMBNAIL_SRC   = "IMG_6064.jpeg"; // Contents page
-    const INSPECTION_THUMBNAIL_SRC = "IMG_6065.jpeg"; // About the inspection
-    const EXTRA_THUMBNAIL_SRC      = "IMG_6073.jpeg"; // Extra page
-
-    const surveyImage     = document.getElementById('surveyImage');
-    const overlay         = document.getElementById('loadingOverlay');
-    const closeBtn        = document.getElementById('closeOverlay');
-    const pdfThumb        = document.getElementById('pdfThumb');
-    const contentsThumb   = document.getElementById('contentsThumb');
-    const inspectionThumb = document.getElementById('inspectionThumb');
-    const extraThumb      = document.getElementById('extraThumb');
-    const placeholders    = document.getElementById('placeholderGroup');
+    const surveyImage = document.getElementById('surveyImage');
+    const overlay     = document.getElementById('loadingOverlay');
+    const closeBtn    = document.getElementById('closeOverlay');
 
     function showOverlay(){
       overlay.classList.add('show');
-      document.body.style.overflow = 'hidden'; // lock page scroll
-
-      // 4 real thumbnails
-      pdfThumb.src        = PDF_THUMBNAIL_SRC;
-      contentsThumb.src   = CONTENTS_THUMBNAIL_SRC;
-      inspectionThumb.src = INSPECTION_THUMBNAIL_SRC;
-      extraThumb.src      = EXTRA_THUMBNAIL_SRC;
-
-      pdfThumb.style.display        = 'block';
-      contentsThumb.style.display   = 'block';
-      inspectionThumb.style.display = 'block';
-      extraThumb.style.display      = 'block';
-
-      // Reveal placeholders as a grid (prevents collapse)
-      placeholders.classList.add('grid');
+      document.body.style.overflow = 'hidden'; // lock background scroll
     }
-
     function closeOverlayFn(){
       overlay.classList.remove('show');
       document.body.style.overflow = ''; // restore scroll
