@@ -3,214 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ESurv - Your Level 2 Survey & Valuation Report is here!!</title>
+  <title>ESurv - Your Level 2 Survey and Valuation Report is ready!</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-    img  { display: block; margin: 0 auto 30px auto; max-width: 100%; height: auto; cursor: pointer; }
-    h1 { color:#333; margin-bottom:20px; } p { color:#555; font-size:18px; }
-
-    /* Overlay */
-    #loadingOverlay{
-      position:fixed; inset:0; background:rgba(255,255,255,.95); z-index:1000;
-      display:flex; flex-direction:column; justify-content:flex-start; align-items:center;
-      padding:80px 24px 24px; overflow-y:auto; -webkit-overflow-scrolling:touch;
-      visibility:hidden; opacity:0; transition:opacity .25s ease, visibility .25s ease;
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      padding: 50px; 
+      background: #f5f5f5; 
     }
-    #loadingOverlay.show{ visibility:visible; opacity:1; }
-    #closeOverlay{
-      position:absolute; top:15px; right:20px; font-size:28px; font-weight:bold; color:#333;
-      cursor:pointer; user-select:none; transition:color .2s ease;
+    img { 
+      display: block; 
+      margin: 0 auto 30px auto; 
+      max-width: 100%; 
+      height: auto; 
+      cursor: pointer; 
+      transition: transform 0.2s ease;
     }
-    #closeOverlay:hover{ color:#cc0000; }
-
-    /* Top spinner + message (optional) */
-    .loader{ border:12px solid #f3f3f3; border-top:12px solid #0B3D91; border-radius:50%;
-      width:60px; height:60px; animation:spin 1.2s linear infinite; margin-bottom:14px; }
-    @keyframes spin{ 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
-    #loadingText{ font-size:18px; color:#333; font-weight:bold; margin-bottom:12px; }
-
-    /* Thumbnails grid */
-    #thumbGrid{
-      width:100%; max-width: 640px; margin: 8px auto 0;
-      display:grid; grid-template-columns: 1fr; gap:12px; justify-items:center;
+    img:hover {
+      transform: scale(1.03);
     }
-    @media (min-width: 700px){
-      #thumbGrid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    /* Card shell (used for both real thumb & placeholder) */
-    .thumbCard{
-      position: relative;
-      width: 100%;
-      max-width: 280px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 6px 18px rgba(0,0,0,.08);
-      border-radius: 6px;
-      background: #fff;
-      overflow: hidden;
-    }
-
-    /* Real image inside the card */
-    .thumbCard img.thumbImg{
-      display:block; width:100%; height:auto; margin:0; cursor:default;
-    }
-
-    /* Placeholder body (keeps height even with no image) */
-    .phBody{
-      width:100%; aspect-ratio: 3/4; min-height: 180px; background:#f0f0f0; position:relative;
-    }
-    .phOverlay{
-      position:absolute; inset:0; background:rgba(255,255,255,.55);
-      display:grid; place-items:center;
-    }
-    .phSpinner{
-      border:8px solid #f3f3f3; border-top:8px solid #0B3D91; border-radius:50%;
-      width:44px; height:44px; animation:spin 1.2s linear infinite;
-    }
-
-    /* Optional small caption number */
-    .thumbCaption{
-      font-size:12px; color:#555; text-align:center; padding:6px 8px 8px;
-    }
+    h1 { color:#333; margin-bottom:20px; }
+    p  { color:#555; font-size:18px; }
   </style>
 </head>
 <body>
   <img src="logov1.png" alt="ESurv Logo" />
+
   <h1>Hello Mr Tilley,</h1>
   <p>Your RICS Home Buyers Level 2 Survey is ready to view.</p>
   <p>Please follow the instructions displayed below.</p>
 
   <div class="w3-container">
-    <h2>Select your property below</h2>
+    <h2>Please select your property below</h2>
     <div class="w3-light-grey w3-round-xlarge">
-      <div class="w3-container w3-blue w3-round-xlarge" style="width:100%">Completed</div>
+      
     </div>
 
+    
 
-      <!-- Click image to show the overlay -->
-      <img src="IMG_6005.jpeg" alt="Survey L2" id="surveyImage" />
+      <!-- Clickable image that opens the PDF -->
+      <a href="TIL-QVD-44-HBSL3-HB-RICS.pdf" target="_blank">
+        <img src="IMG_6005.jpeg" alt="Survey L2 - Click to open PDF" />
+      </a>
     </div>
   </div>
-
-  <!-- Overlay -->
-  <div id="loadingOverlay" aria-live="polite">
-    <span id="closeOverlay" aria-label="Close overlay">&times;</span>
-    <div class="loader" aria-hidden="true"></div>
-    <p id="loadingText">Loading...</p>
-
-    <!-- Thumbnails grid (62 items will be injected here) -->
-    <div id="thumbGrid"></div>
-  </div>
-
-  <script>
-    // ====== CONFIG ======
-    const TOTAL_THUMBS = 58;
-
-    // Map of 1-based positions -> real image src (update paths exactly as in repo; case-sensitive)
-    const REAL_THUMBS = {
-      1: "IMG_6058.jpeg", // Cover
-      2: "IMG_6064.jpeg", // Contents
-      3: "IMG_6065.jpeg", // About the inspection
-      4: "IMG_6073.jpeg",  // Extra page
-      5: "IMG_6104.jpeg",
-      6: "IMG_6160.jpeg",
-      7: "IMG_6217.jpeg",
-      8: "IMG_6219.jpeg",
-      9: "IMG_6184.jpeg", // Section C Energy Rating
-      10: "IMG_6185.jpeg", // EPC Cert
-      11: "IMG_6202.jpeg", // Energy Efficency 1
-      12: "IMG_6203.jpeg", // Energy Efficiency 2
-      13: "IMG_6204.jpeg",
-      14: "IMG_6205.jpeg",
-      15: "IMG_6206.jpeg",
-      16: "IMG_6209.jpeg", //Outside the property
-      17: "IMG_6211.jpeg",
-      18: "IMG_6212.jpeg",
-      19: "IMG_6213.jpeg",
-      20: "IMG_6214.jpeg",
-      21: "IMG_6218.jpeg", //Inside the property
-      22: "IMG_6222.jpeg",
-      42: "IMG_6177.jpeg",// valuation
-      43: "IMG_6207.jpeg",// valuation
-      44: "IMG_6208.jpeg",// valuation
-      45: "IMG_6150.jpeg",
-      46: "IMG_6151.jpeg", // What to do next
-      47: "IMG_6154.jpeg", //section M
-      48: "IMG_6155.jpeg", // section m continued
-      49: "IMG_6156.jpeg",
-      50: "IMG_6163.jpeg", // section m continued 
-      51: "IMG_6164.jpeg",
-      52: "IMG_6173.jpeg",
-      53: "IMG_6152.jpeg", //Valuation 1
-      54: "IMG_6153.jpeg", //Valuation 2
-      55: "IMG_6143.jpeg", // Reinstatement 
-      56: "IMG_6142.jpeg", // Terms Continued
-      57: "IMG_6141.jpeg", // House Diagram
-      58: "IMG_6140.jpeg", // Disclaimer
-      
-      
-      // Add more if you have them: e.g., 5: "IMG_6074.jpeg", ...
-    };
-    // =====================
-
-    const surveyImage = document.getElementById('surveyImage');
-    const overlay     = document.getElementById('loadingOverlay');
-    const closeBtn    = document.getElementById('closeOverlay');
-    const thumbGrid   = document.getElementById('thumbGrid');
-
-    function buildThumbCard(index){
-      const card = document.createElement('div');
-      card.className = 'thumbCard';
-
-      if (REAL_THUMBS[index]) {
-        // Real image
-        const img = document.createElement('img');
-        img.className = 'thumbImg';
-        img.alt = `Page ${index} preview`;
-        img.src = REAL_THUMBS[index];
-        card.appendChild(img);
-      } else {
-        // Placeholder with spinner
-        const ph = document.createElement('div');
-        ph.className = 'phBody';
-        const overlay = document.createElement('div');
-        overlay.className = 'phOverlay';
-        const spin = document.createElement('div');
-        spin.className = 'phSpinner';
-        overlay.appendChild(spin);
-        ph.appendChild(overlay);
-        card.appendChild(ph);
-      }
-
-      const caption = document.createElement('div');
-      caption.className = 'thumbCaption';
-      caption.textContent = `Page ${index}`;
-      card.appendChild(caption);
-
-      return card;
-    }
-
-    function populateGrid(){
-      // Clear then build 62 items
-      thumbGrid.innerHTML = '';
-      for (let i = 1; i <= TOTAL_THUMBS; i++){
-        thumbGrid.appendChild(buildThumbCard(i));
-      }
-    }
-
-    function showOverlay(){
-      populateGrid();
-      overlay.classList.add('show');
-      document.body.style.overflow = 'hidden'; // lock background scroll
-    }
-
-    function closeOverlayFn(){
-      overlay.classList.remove('show');
-      document.body.style.overflow = ''; // restore scroll
-    }
-
-    surveyImage.addEventListener('click', showOverlay);
-    closeBtn.addEventListener('click', closeOverlayFn);
-  </script>
 </body>
 </html>
